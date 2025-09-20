@@ -1,0 +1,28 @@
+{
+  "lastId": 2,
+  "admins": [
+    {
+      "id": 1,
+      "name": "Admin",
+      "email": "freegaza1000@gmail.com",
+      "phone": "",
+      "password": "gaza10.com",
+      "created_at": "2025-09-20T13:54:14.690Z",
+      "avatarUrl": "/uploads/admin-avatar-1758380561873.png"
+    },
+    {
+      "id": 2,
+      "name": "Fares Ahmed ",
+      "email": "elfaresahmed777@gmail.com",
+      "password": "fares10.com",
+      "phone": "",
+      "created_at": "2025-09-20T14:39:58.225Z"
+    }
+  ],
+  "profile": {
+    "name": "Admin",
+    "email": "freegaza1000@gmail.com",
+    "phone": "",
+    "avatarUrl": "/uploads/admin-avatar-1758380561873.png"
+  }
+}

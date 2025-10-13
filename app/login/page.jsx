@@ -7,6 +7,7 @@ import { useRouter } from "next/navigation";
 import { useState, useEffect } from "react";
 import { Button } from "@/components/ui/button";
 import { useUser } from "@/context/UserContext";
+import Loader from "@/components/ui/Loader";
 
 
 export default function LoginPage() {
@@ -16,6 +17,7 @@ export default function LoginPage() {
 
     const [loading, setLoading] = useState(false);
     const [serverError, setServerError] = useState("");
+    const [authChecking, setAuthChecking] = useState(true);
 
     const { register, handleSubmit, formState: { errors } } = useForm({
         defaultValues: {
@@ -25,10 +27,16 @@ export default function LoginPage() {
     });
 
     useEffect(() => {
-        if (user) {
-            router.replace("/home"); // replace prevents going back to login with "Back"
-        }
-    }, [user, router]);
+        if (state.user === undefined) return; // still loading
+        if (state.user !== null) {
+            if(state.user.role){
+                router.replace("/admin/dashboard");
+            }else{
+                router.replace("/home");
+            }
+            setAuthChecking(false);
+        } 
+    }, [state.user, router]);
 
     const onSubmit = async (data) => {
         setLoading(true);
@@ -45,6 +53,7 @@ export default function LoginPage() {
             const json = await res.json();
 
             if (!res.ok) {
+                dispatch({ type: "LOGOUT" });
                 throw new Error(json.message || "فشل تسجيل الدخول");
             }
 
@@ -59,6 +68,14 @@ export default function LoginPage() {
             setLoading(false);
         }
     };
+
+    if (authChecking) {
+        return (
+            <div className="flex items-center justify-center min-h-screen">
+                <Loader />
+            </div>
+        );
+    }
 
     // Prevent login form from flashing if user already logged in
     if (user) {

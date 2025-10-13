@@ -32,20 +32,20 @@ export default function MyRequestDetailsPage() {
     const { id } = useParams();
     const router = useRouter();
     const { state } = useUser();
-    
+
     const [request, setRequest] = useState(null);
     const [loading, setLoading] = useState(true);
     const [deleting, setDeleting] = useState(false);
     const [finalAcceptLoading, setFinalAcceptLoading] = useState(false);
     const [finalSubmissionLoading, setFinalSubmissionLoading] = useState(false);
     const [commentModal, setCommentModal] = useState({ open: false, deliverableId: null, action: null, comment: "" });
-    const [addDeliverableModal, setAddDeliverableModal] = useState({open: false,message: "",files: [],});
+    const [addDeliverableModal, setAddDeliverableModal] = useState({ open: false, message: "", files: [], });
 
     useEffect(() => {
         const fetchRequest = async () => {
             try {
                 setLoading(true);
-                const res = await fetchWithAuth(`${process.env.NEXT_PUBLIC_BASE_URL}/requests/my/${id}`);
+                const res = await fetchWithAuth(`${process.env.NEXT_PUBLIC_BASE_URL}/requests/${id}`);
                 if (!res.ok) throw new Error("فشل تحميل الطلب");
                 const json = await res.json();
                 setRequest(json.data);
@@ -97,7 +97,7 @@ export default function MyRequestDetailsPage() {
                 ...prev,
                 deliverables: prev.deliverables.map(d =>
                     d.id === commentModal.deliverableId
-                        ? { ...d, is_accepted: commentModal.action === "accept", owner_comment: commentModal.comment, decision_at:new Date() }
+                        ? { ...d, is_accepted: commentModal.action === "accept", owner_comment: commentModal.comment, decision_at: new Date() }
                         : d
                 ),
             }));
@@ -146,7 +146,7 @@ export default function MyRequestDetailsPage() {
 
             const attachmentsMeta = files?.map((file) => ({
                 filename: file.name,
-                file_type: "general", 
+                file_type: "general",
             }));
 
             const formData = new FormData();
@@ -183,7 +183,7 @@ export default function MyRequestDetailsPage() {
         } catch (err) {
             toast.error(err.message);
 
-        }finally {
+        } finally {
             setAddDeliverableModal({ open: false, message: "", files: [] });
         }
     };
@@ -193,7 +193,7 @@ export default function MyRequestDetailsPage() {
             const requestId = request.id;
             if (!requestId) return toast.error("Request ID is missing");
 
-            setFinalSubmissionLoading(true); 
+            setFinalSubmissionLoading(true);
 
             const response = await fetchWithAuth(
                 `${process.env.NEXT_PUBLIC_BASE_URL}/requests/${requestId}/submit`,
@@ -228,7 +228,7 @@ export default function MyRequestDetailsPage() {
         } catch (err) {
             toast.error(err.message);
         } finally {
-            setFinalSubmissionLoading(false); 
+            setFinalSubmissionLoading(false);
         }
     };
 
@@ -237,7 +237,7 @@ export default function MyRequestDetailsPage() {
         try {
             if (!request?.id) return toast.error("Request ID is missing");
 
-            setFinalAcceptLoading(true); 
+            setFinalAcceptLoading(true);
 
             const response = await fetchWithAuth(
                 `${process.env.NEXT_PUBLIC_BASE_URL}/requests/${request.id}/accept-submission`,
@@ -272,11 +272,11 @@ export default function MyRequestDetailsPage() {
         } catch (err) {
             toast.error(err.message);
         } finally {
-            setFinalAcceptLoading(false); 
+            setFinalAcceptLoading(false);
         }
     };
 
-    const onDisputeSuccess=(disputeId)=>{
+    const onDisputeSuccess = (disputeId) => {
         router.push(`/disputes/${disputeId}`)
     }
 
@@ -290,13 +290,15 @@ export default function MyRequestDetailsPage() {
     if (state.user) {
         if (state.user.id === requester.user.id) loggedInUserRole = "owner";
         else if (request.accepted_offer?.provider_id === state.user.id) loggedInUserRole = "provider";
-        else if(state.user.role) loggedInUserRole = "admin";
+        else if (state.user.role) loggedInUserRole = "admin";
         else router.push("/requests");
     }
 
     return (
         <div className="pb-10 pt-12 px-4 md:px-6">
-            <BackLink href="/my-requests">العودة لطلباتي</BackLink>
+            <BackLink href={loggedInUserRole === "admin" ? "/admin/dashboard" : "/my-requests"}>
+                {loggedInUserRole === "admin" ? "العودة للرئيسية" : "العودة لطلباتي"}
+            </BackLink>
             <PageTitle title={request.title} />
 
             {loggedInUserRole && (
@@ -331,7 +333,7 @@ export default function MyRequestDetailsPage() {
                         </div>
                         <div className="flex justify-between">
                             <span className="font-semibold text-gray-700"> حالة الطلب:</span>
-                            <span className="text-label"> { translateRequestStatus(request.status)}</span>
+                            <span className="text-label"> {translateRequestStatus(request.status)}</span>
                         </div>
                         {request.category?.name && (
                             <div className="flex justify-between">
@@ -353,7 +355,7 @@ export default function MyRequestDetailsPage() {
                 <div className="w-full lg:w-3/4 flex flex-col gap-6">
 
                     {/* Actions */}
-                    {(loggedInUserRole === "owner" || loggedInUserRole === "provider" || loggedInUserRole === "admin" ) && (
+                    {(loggedInUserRole === "owner" || loggedInUserRole === "provider" || loggedInUserRole === "admin") && (
                         <div className="flex justify-end gap-2 mt-4">
                             {/* Owner edit/delete (only when status is open) */}
                             {loggedInUserRole === "owner" && request.status === "open" && (
@@ -434,35 +436,35 @@ export default function MyRequestDetailsPage() {
                             {/* Owner: Accept Final Deliverable button */}
                             {loggedInUserRole === "owner" &&
                                 request.status === "submitted" && (
-                                <AlertDialog>
-                                    <AlertDialogTrigger asChild>
-                                        <Button variant="default" className="bg-primary text-white hover:bg-blue-400">
-                                            قبول التسليم النهائي
-                                        </Button>
-                                    </AlertDialogTrigger>
-                                    <AlertDialogContent dir="rtl" className="rounded-2xl shadow-2xl border border-green-200 p-6">
-                                        <AlertDialogHeader>
-                                            <AlertDialogTitle className="text-2xl font-bold text-right">
-                                                تأكيد قبول التسليم النهائي
-                                            </AlertDialogTitle>
-                                            <AlertDialogDescription className="text-gray-700 text-right">
-                                                هل أنت متأكد أنك تريد قبول التسليم النهائي لهذا الطلب؟ سيتم إتمام الدفع وإغلاق الطلب.
-                                            </AlertDialogDescription>
-                                        </AlertDialogHeader>
-                                        <AlertDialogFooter className="flex flex-row-reverse gap-4 mt-6">
-                                            <AlertDialogCancel className="rounded-xl px-8 py-3 text-lg border hover:bg-gray-100 transition">
-                                                إلغاء
-                                            </AlertDialogCancel>
-                                            <AlertDialogAction
-                                                onClick={handleAcceptFinalSubmission}
-                                                disabled={finalAcceptLoading}
-                                                className="rounded-xl px-8 py-3 text-lg bg-primary text-white font-semibold shadow hover:bg-blue-400 transition disabled:opacity-50"
-                                            >
-                                                {finalAcceptLoading ? "جاري القبول..." : "تأكيد"}
-                                            </AlertDialogAction>
-                                        </AlertDialogFooter>
-                                    </AlertDialogContent>
-                                </AlertDialog>
+                                    <AlertDialog>
+                                        <AlertDialogTrigger asChild>
+                                            <Button variant="default" className="bg-primary text-white hover:bg-blue-400">
+                                                قبول التسليم النهائي
+                                            </Button>
+                                        </AlertDialogTrigger>
+                                        <AlertDialogContent dir="rtl" className="rounded-2xl shadow-2xl border border-green-200 p-6">
+                                            <AlertDialogHeader>
+                                                <AlertDialogTitle className="text-2xl font-bold text-right">
+                                                    تأكيد قبول التسليم النهائي
+                                                </AlertDialogTitle>
+                                                <AlertDialogDescription className="text-gray-700 text-right">
+                                                    هل أنت متأكد أنك تريد قبول التسليم النهائي لهذا الطلب؟ سيتم إتمام الدفع وإغلاق الطلب.
+                                                </AlertDialogDescription>
+                                            </AlertDialogHeader>
+                                            <AlertDialogFooter className="flex flex-row-reverse gap-4 mt-6">
+                                                <AlertDialogCancel className="rounded-xl px-8 py-3 text-lg border hover:bg-gray-100 transition">
+                                                    إلغاء
+                                                </AlertDialogCancel>
+                                                <AlertDialogAction
+                                                    onClick={handleAcceptFinalSubmission}
+                                                    disabled={finalAcceptLoading}
+                                                    className="rounded-xl px-8 py-3 text-lg bg-primary text-white font-semibold shadow hover:bg-blue-400 transition disabled:opacity-50"
+                                                >
+                                                    {finalAcceptLoading ? "جاري القبول..." : "تأكيد"}
+                                                </AlertDialogAction>
+                                            </AlertDialogFooter>
+                                        </AlertDialogContent>
+                                    </AlertDialog>
                                 )}
 
                             <RequestDisputeButton
@@ -680,7 +682,7 @@ export default function MyRequestDetailsPage() {
                                         <p className="text-gray-500">لا يوجد تسليمات بعد</p>
                                     )}
 
-                        
+
                                 </div>
 
                             </div>
@@ -697,59 +699,59 @@ export default function MyRequestDetailsPage() {
                             </div>
                         ) : request.offers?.length > 0 ? (
                             // Show all offers if none is accepted yet
-                                <div>
-                                    <h3 className="text-lg font-semibold mb-2 pb-1">العروض المقدمة</h3>
-                                    <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4 w-fit ">
-                                        {request.offers.map((offer) => (
-                                            <div key={offer.id} className="flex flex-col gap-3 p-4 shadow-sm bg-white rounded-2xl w-fit">
-                                                <OfferCard offer={offer} />
+                            <div>
+                                <h3 className="text-lg font-semibold mb-2 pb-1">العروض المقدمة</h3>
+                                <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4 w-fit ">
+                                    {request.offers.map((offer) => (
+                                        <div key={offer.id} className="flex flex-col gap-3 p-4 shadow-sm bg-white rounded-2xl w-fit">
+                                            <OfferCard offer={offer} />
 
-                                                {/* Owner actions */}
-                                                {loggedInUserRole === "owner" && (
-                                                    <div className="flex flex-col sm:flex-row gap-2 mt-2 w-full">
-                                                        <AlertDialog className="flex-1" dir="rtl">
-                                                            <AlertDialogTrigger asChild>
-                                                                <Button className="w-full sm:w-auto">قبول العرض</Button>
-                                                            </AlertDialogTrigger>
-                                                            <AlertDialogContent>
-                                                                <AlertDialogHeader>
-                                                                    <AlertDialogTitle className="text-right">تأكيد قبول العرض</AlertDialogTitle>
-                                                                    <AlertDialogDescription className="text-right">
-                                                                        هل أنت متأكد أنك تريد قبول هذا العرض؟ لا يمكن التراجع عن هذا القرار لاحقًا.
-                                                                    </AlertDialogDescription>
-                                                                </AlertDialogHeader>
-                                                                <AlertDialogFooter className="flex flex-row-reverse gap-2">
-                                                                    <AlertDialogCancel>إلغاء</AlertDialogCancel>
-                                                                    <AlertDialogAction
-                                                                        onClick={() => {
-                                                                            handleAcceptOffer(offer.id);
-                                                                        }}
-                                                                    >
-                                                                        تأكيد
-                                                                    </AlertDialogAction>
-                                                                </AlertDialogFooter>
-                                                            </AlertDialogContent>
-                                                        </AlertDialog>
+                                            {/* Owner actions */}
+                                            {loggedInUserRole === "owner" && (
+                                                <div className="flex flex-col sm:flex-row gap-2 mt-2 w-full">
+                                                    <AlertDialog className="flex-1" dir="rtl">
+                                                        <AlertDialogTrigger asChild>
+                                                            <Button className="w-full sm:w-auto">قبول العرض</Button>
+                                                        </AlertDialogTrigger>
+                                                        <AlertDialogContent>
+                                                            <AlertDialogHeader>
+                                                                <AlertDialogTitle className="text-right">تأكيد قبول العرض</AlertDialogTitle>
+                                                                <AlertDialogDescription className="text-right">
+                                                                    هل أنت متأكد أنك تريد قبول هذا العرض؟ لا يمكن التراجع عن هذا القرار لاحقًا.
+                                                                </AlertDialogDescription>
+                                                            </AlertDialogHeader>
+                                                            <AlertDialogFooter className="flex flex-row-reverse gap-2">
+                                                                <AlertDialogCancel>إلغاء</AlertDialogCancel>
+                                                                <AlertDialogAction
+                                                                    onClick={() => {
+                                                                        handleAcceptOffer(offer.id);
+                                                                    }}
+                                                                >
+                                                                    تأكيد
+                                                                </AlertDialogAction>
+                                                            </AlertDialogFooter>
+                                                        </AlertDialogContent>
+                                                    </AlertDialog>
 
 
-                                                        <Button
-                                                            variant="outline"
-                                                            className="w-full sm:flex-1 text-primary border border-primary hover:bg-blue-100  bg-white"
-                                                            onClick={() => router.push(`/chats/offer/${offer.id}`)}
-                                                        >
-                                                            مراسلة مقدم العرض
-                                                        </Button>
-                                                    </div>
-                                                )}
-                                            </div>
-                                        ))}
-                                    </div>
+                                                    <Button
+                                                        variant="outline"
+                                                        className="w-full sm:flex-1 text-primary border border-primary hover:bg-blue-100  bg-white"
+                                                        onClick={() => router.push(`/chats/offer/${offer.id}`)}
+                                                    >
+                                                        مراسلة مقدم العرض
+                                                    </Button>
+                                                </div>
+                                            )}
+                                        </div>
+                                    ))}
                                 </div>
+                            </div>
 
                         ) : (
                             <div>
-                            <h3 className="text-lg font-semibold mb-2-b pb-1">العروض المقدمة</h3>
-                            <p className="text-gray-500">لا توجد عروض حتى الآن</p>
+                                <h3 className="text-lg font-semibold mb-2-b pb-1">العروض المقدمة</h3>
+                                <p className="text-gray-500">لا توجد عروض حتى الآن</p>
                             </div>
                         )}
 
@@ -888,11 +890,11 @@ function RequestDisputeButton({ request, loggedInUserRole, onDisputeSuccess }) {
             const res = await fetchWithAuth(`${process.env.NEXT_PUBLIC_BASE_URL}${endpoint}`, {
                 method: "POST",
                 headers: { "Content-Type": "application/json" },
-                body: JSON.stringify({ description, complainant_note:note,request_id:request.id }),
+                body: JSON.stringify({ description, complainant_note: note, request_id: request.id }),
             });
 
             const json = await res.json();
-            if (!res.ok) throw new Error( "فشل رفع النزاع");
+            if (!res.ok) throw new Error("فشل رفع النزاع");
 
             toast.success("تم رفع النزاع بنجاح");
             setOpen(false);

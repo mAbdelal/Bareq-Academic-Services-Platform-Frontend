@@ -21,7 +21,7 @@ export default function RequestsPage() {
     const [totalPages, setTotalPages] = useState(1);
     const [loading, setLoading] = useState(false);
 
-    const LIMIT = 9;
+    const LIMIT = 10;
 
     useEffect(() => {
         fetchCategories();
@@ -68,7 +68,9 @@ export default function RequestsPage() {
             params.append("limit", LIMIT);
 
             const url = `${process.env.NEXT_PUBLIC_BASE_URL}/requests/search/public?${params.toString()}`;
-            const res = await fetch(url);
+            const res = await fetch(url,{
+                cache: "no-store",
+            });
             const json = await res.json();
 
             setRequests(json.data.data);

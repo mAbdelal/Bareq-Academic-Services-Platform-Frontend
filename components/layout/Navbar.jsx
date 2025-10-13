@@ -107,7 +107,6 @@ export default function Navbar() {
                     <li><Link href="/services" className="flex items-center gap-2 hover:text-hover-label font-bold"><Briefcase className="w-5 h-5" /> خدمات</Link></li>
                     <li><Link href="/requests" className="flex items-center gap-2 hover:text-hover-label font-bold"><Layers className="w-5 h-5" /> طلبات</Link></li>
                     <li><Link href="/academics" className="flex items-center gap-2 hover:text-hover-label font-bold"><Users className="w-5 h-5" /> أكاديميين</Link></li>
-                    <li><Link href="/complaints" className="flex items-center gap-2 hover:text-hover-label font-bold"><Megaphone className="w-5 h-5" /> الشكاوى</Link></li>
                 </ul>
 
                 {/* Right: Auth / Avatar / Notifications / Mobile Menu */}

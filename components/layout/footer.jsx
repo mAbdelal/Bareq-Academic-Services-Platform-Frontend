@@ -17,7 +17,7 @@ export default function Footer() {
             <Container className="px-8 py-10 grid md:grid-cols-3 gap-8 justify-center">
                 <div className="flex flex-col gap-4">
                     <span className="text-primary text-3xl font-bold">بارق</span>
-                    <p className="text-sm text-gray-500">عن بارق: منصة تعليمية لتقديم الخدمات الأكاديمية والمشاريع للطلاب والخريجين.</p>
+                    <p className="text-sm text-label">عن بارق: منصة تعليمية لتقديم الخدمات الأكاديمية والمشاريع للطلاب والخريجين.</p>
                 </div>
 
                 <div className="flex flex-col gap-2">

@@ -1,40 +1,81 @@
 "use client";
 import { useForm } from "react-hook-form";
-import { adminLogin, isAdminLoggedIn } from "@/lib/adminAuth";
-import { useRouter, useSearchParams } from "next/navigation";
+import { useRouter } from "next/navigation";
 import { useEffect, useState } from "react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
+import { useUser } from "@/context/UserContext";
+import Loader from "@/components/ui/Loader";
 
 export default function AdminLoginPage() {
   const router = useRouter();
-  const search = useSearchParams();
-  const next = search.get("next") || "/admin/dashboard";
   const { register, handleSubmit, formState: { errors, isSubmitting } } = useForm({
     defaultValues: { email: "", password: "" }
   });
+
   const [error, setError] = useState("");
 
+  const { state, dispatch } = useUser();
+
   useEffect(() => {
-    if (isAdminLoggedIn()) router.replace("/admin/dashboard");
-  }, [router]);
+    if (state.user === undefined) return; // Still loading user data
+
+    if (state.user !== null) {
+      if (state.user.role) {
+        // Redirect admin to dashboard
+        router.replace("/admin/dashboard");
+      } else {
+        // Redirect non-admin users to home
+        router.replace("/home");
+      }
+    }
+    // No action needed if user is null (not logged in)
+  }, [state.user, router]);
+
 
   const onSubmit = async (data) => {
     setError("");
-    const res = await adminLogin(data.email, data.password);
-    if (res.ok) {
-      router.replace(next);
-    } else {
-      setError(res.message || "بيانات الدخول غير صحيحة");
+
+    try {
+      const res = await fetch(`${process.env.NEXT_PUBLIC_BASE_URL}/auth/login`, {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(data),
+        credentials: "include",
+      });
+
+      const json = await res.json();
+
+      if (!res.ok) {
+        throw new Error(json.message || "فشل تسجيل الدخول");
+      }
+
+      if (json.data) {
+        if (!json.data.role) {
+          throw new Error("غير مصرح لك بالدخول كأدمن");
+        }
+        dispatch({ type: "LOGIN", payload: json.data });
+        router.push("/admin/dashboard");
+      }
+    } catch (err) {
+      setError(err.message);
     }
   };
 
+  if (state.user === undefined) {
+    return (
+      <div className="flex items-center justify-center min-h-screen">
+        <Loader />
+      </div>
+    );
+  }
+
+
   return (
-    <div className="min-h-screen flex items-center justify-center p-4 bg-gray-50">
+    <div className="min-h-screen flex items-center justify-center p-4">
       <div className="w-full max-w-md bg-white p-8 rounded-2xl shadow">
         <h1 className="text-2xl font-bold mb-2 text-center">تسجيل دخول الأدمن</h1>
-        <p className="text-center text-gray-500 mb-6">الرجاء إدخال بيانات الدخول للوصول إلى لوحة التحكم</p>
         {error && <p className="text-red-500 mb-3 text-center">{error}</p>}
         <form className="flex flex-col gap-4" onSubmit={handleSubmit(onSubmit)}>
           <div className="space-y-2">

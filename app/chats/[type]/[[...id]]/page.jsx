@@ -172,7 +172,7 @@ export default function ChatPage() {
 
     return (
 
-        <div className="h-screen flex flex-col">
+        <div className="h-screen flex flex-col pb-10">
             <div className="p-4 mt-5">
                 <BackLink href="/home">العودة للرئيسية</BackLink>
             </div>

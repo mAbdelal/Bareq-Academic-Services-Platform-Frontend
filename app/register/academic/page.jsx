@@ -5,11 +5,11 @@ import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { useState } from "react";
 import { Button } from "@/components/ui/button";
+import { toast } from "sonner"; 
 
 export default function SignUpPage() {
     const router = useRouter();
     const [loading, setLoading] = useState(false);
-    const [serverError, setServerError] = useState("");
 
     const { register, handleSubmit, watch, formState: { errors } } = useForm({
         defaultValues: {
@@ -29,16 +29,16 @@ export default function SignUpPage() {
 
     const onSubmit = async (data) => {
         setLoading(true);
-        setServerError("");
+
 
         if (!data.terms) {
-            setServerError("يجب الموافقة على شروط الاستخدام");
+            toast.warning("يجب الموافقة على شروط الاستخدام");
             setLoading(false);
             return;
         }
 
         if (data.password !== data.confirmPassword) {
-            setServerError("كلمتا المرور غير متطابقتين");
+            toast.error("كلمتا المرور غير متطابقتين");
             setLoading(false);
             return;
         }
@@ -64,25 +64,28 @@ export default function SignUpPage() {
             });
 
             const json = await res.json();
+
             if (!res.ok) throw new Error(json.message || "فشل التسجيل");
+
+            toast.success("تم إنشاء الحساب بنجاح");
+
+            // Redirect after success
             router.push("/login");
         } catch (err) {
-            setServerError(err.message);
+            toast.error(err.message || "حدث خطأ أثناء التسجيل");
         } finally {
             setLoading(false);
         }
     };
 
     return (
-        <div className="min-h-screen flex items-center justify-center mt-10 p-4">
+        <div className="min-h-screen flex items-center justify-center mt-10 p-4 bg-gray-50">
             <div className="w-full max-w-xl bg-white p-10 rounded-3xl shadow-xl border border-gray-200">
-
-                <h2 className="text-3xl font-bold mb-6 text-center text-label">تسجيل أكاديمي جديد</h2>
-
-                {serverError && <p className="text-red-500 text-center mb-4">{serverError}</p>}
+                <h2 className="text-3xl font-bold mb-6 text-center text-gray-800">تسجيل أكاديمي جديد</h2>
 
                 <form className="grid grid-cols-1 gap-6" onSubmit={handleSubmit(onSubmit)}>
-                    {/* Names */}
+
+                    {/* First Name Arabic */}
                     <div className="flex flex-col">
                         <label className="mb-1 font-medium">الاسم الأول بالعربية</label>
                         <input
@@ -92,6 +95,7 @@ export default function SignUpPage() {
                         {errors.first_name_ar && <span className="text-red-500 text-sm mt-1">{errors.first_name_ar.message}</span>}
                     </div>
 
+                    {/* Last Name Arabic */}
                     <div className="flex flex-col">
                         <label className="mb-1 font-medium">اسم العائلة بالعربية</label>
                         <input
@@ -101,6 +105,7 @@ export default function SignUpPage() {
                         {errors.last_name_ar && <span className="text-red-500 text-sm mt-1">{errors.last_name_ar.message}</span>}
                     </div>
 
+                    {/* Full Name English */}
                     <div className="flex flex-col">
                         <label className="mb-1 font-medium">الاسم الكامل بالإنجليزية</label>
                         <input
@@ -110,7 +115,7 @@ export default function SignUpPage() {
                         {errors.full_name_en && <span className="text-red-500 text-sm mt-1">{errors.full_name_en.message}</span>}
                     </div>
 
-                    {/* Contact */}
+                    {/* Email */}
                     <div className="flex flex-col">
                         <label className="mb-1 font-medium">البريد الإلكتروني</label>
                         <input
@@ -121,8 +126,9 @@ export default function SignUpPage() {
                         {errors.email && <span className="text-red-500 text-sm mt-1">{errors.email.message}</span>}
                     </div>
 
+                    {/* Username */}
                     <div className="flex flex-col">
-                        <label className="mb-1 font-medium">اسم المستخدم </label>
+                        <label className="mb-1 font-medium">اسم المستخدم</label>
                         <input
                             {...register("username", { required: "هذا الحقل مطلوب" })}
                             placeholder="أدخل اسم المستخدم الفريد"
@@ -136,7 +142,7 @@ export default function SignUpPage() {
                         <label className="mb-1 font-medium">الحالة الأكاديمية</label>
                         <select
                             {...register("academic_status", { required: "هذا الحقل مطلوب" })}
-                            className="border rounded-xl p-3 focus:outline-none focus:ring-2 border-gray-300 focus:ring-primary"
+                            className={`border rounded-xl p-3 focus:outline-none focus:ring-2 ${errors.academic_status ? "border-red-500 focus:ring-red-400" : "border-gray-300 focus:ring-primary"}`}
                         >
                             <option value="">اختر الحالة الأكاديمية</option>
                             <option value="high_school_student">طالب ثانوي</option>
@@ -154,15 +160,26 @@ export default function SignUpPage() {
                         {errors.academic_status && <span className="text-red-500 text-sm mt-1">{errors.academic_status.message}</span>}
                     </div>
 
-                    {/* Password Fields at Bottom */}
+                    {/* Password */}
                     <div className="flex flex-col">
                         <label className="mb-1 font-medium">كلمة المرور</label>
-                        <input type="password" {...register("password", { required: true, minLength: 8 })} className="border rounded-xl p-3 focus:outline-none focus:ring-2 border-gray-300 focus:ring-primary" />
+                        <input
+                            type="password"
+                            {...register("password", { required: "هذا الحقل مطلوب", minLength: { value: 8, message: "يجب أن تكون كلمة المرور 8 أحرف على الأقل" } })}
+                            className={`border rounded-xl p-3 focus:outline-none focus:ring-2 ${errors.password ? "border-red-500 focus:ring-red-400" : "border-gray-300 focus:ring-primary"}`}
+                        />
+                        {errors.password && <span className="text-red-500 text-sm mt-1">{errors.password.message}</span>}
                     </div>
 
+                    {/* Confirm Password */}
                     <div className="flex flex-col">
                         <label className="mb-1 font-medium">تأكيد كلمة المرور</label>
-                        <input type="password" {...register("confirmPassword", { required: true })} className="border rounded-xl p-3 focus:outline-none focus:ring-2 border-gray-300 focus:ring-primary" />
+                        <input
+                            type="password"
+                            {...register("confirmPassword", { required: "يرجى تأكيد كلمة المرور" })}
+                            className={`border rounded-xl p-3 focus:outline-none focus:ring-2 ${errors.confirmPassword ? "border-red-500 focus:ring-red-400" : "border-gray-300 focus:ring-primary"}`}
+                        />
+                        {errors.confirmPassword && <span className="text-red-500 text-sm mt-1">{errors.confirmPassword.message}</span>}
                     </div>
 
                     {/* Terms */}
@@ -174,7 +191,11 @@ export default function SignUpPage() {
                     </div>
 
                     {/* Submit */}
-                    <Button type="submit" className={`w-full bg-primary text-white py-3 rounded-xl shadow-lg hover:bg-primary/80 transition ${loading ? "opacity-70 cursor-not-allowed" : ""}`} disabled={loading}>
+                    <Button
+                        type="submit"
+                        className={`w-full bg-primary text-white py-3 rounded-xl shadow-lg hover:bg-primary/80 transition ${loading ? "opacity-70 cursor-not-allowed" : ""}`}
+                        disabled={loading}
+                    >
                         {loading ? "جار التسجيل..." : "حساب جديد"}
                     </Button>
                 </form>

@@ -13,6 +13,7 @@ import Avatar from "@/components/ui/Avatar";
 import ServiceCard from "@/components/ui/ServiceCard";
 import RatingCard from "@/components/ui/RatingCard";
 import Link from "next/link";
+import { toast } from "sonner";
 
 
 export default function AcademicProfilePage() {
@@ -35,7 +36,7 @@ export default function AcademicProfilePage() {
                 const json = await res.json();
                 setAcademic(json.data || null);
             } catch (err) {
-                console.error(err);
+                toast.error("فشل التحميل");
             } finally {
                 setLoading(false);
             }

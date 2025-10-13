@@ -55,7 +55,7 @@ export default function PrivateServicePage() {
             try {
                 setLoading(true);
                 const res = await fetchWithAuth(
-                    `${process.env.NEXT_PUBLIC_BASE_URL}/services/my/${id}`
+                    `${process.env.NEXT_PUBLIC_BASE_URL}/services/private/${id}`
                 );
                 const json = await res.json();
                 if (res.ok) setServiceData(json.data);
@@ -81,12 +81,12 @@ export default function PrivateServicePage() {
             if (res.ok) {
                 setServiceData((prev) => ({ ...prev, is_active: true }));
 
-                toast.success("تم تفعيل الخدمة بنجاح ✅");
+                toast.success("تم تفعيل الخدمة بنجاح");
             } else {
-                toast.error("فشل في تفعيل الخدمة ❌");
+                toast.error("فشل في تفعيل الخدمة");
             }
         } catch (err) {
-            toast.error("حدث خطأ أثناء تفعيل الخدمة ❌");
+            toast.error("حدث خطأ أثناء تفعيل الخدمة");
         } finally {
             setActivateOpen(false);
         }

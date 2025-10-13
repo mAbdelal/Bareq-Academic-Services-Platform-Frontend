@@ -1,8 +1,7 @@
 import "./globals.css";
 import Container from "@/components/ui/Container";
 import { Cairo } from 'next/font/google';
-import Navbar from "@/components/layout/Navbar";
-import Footer from "@/components/layout/footer";
+import LayoutWrapper from "@/components/layout/LayoutWrapper";
 import { UserProvider } from "@/context/UserContext";
 
 import { Toaster } from "@/components/ui/sonner"
@@ -22,14 +21,14 @@ export default function RootLayout({ children }) {
   return (
     <html lang="ar" className={cairo.className} dir="rtl">
       <body>
-      <UserProvider>
-        <Navbar/>
-          <Container className="pt-[50px]">
-            <main>{children}</main>
-            <Toaster richColors position="top-center" />
-          </Container>
-          <Footer/>
-      </UserProvider>
+        <UserProvider>
+          <LayoutWrapper>
+            <Container className="pt-[50px]">
+              <main>{children}</main>
+              <Toaster richColors position="top-center" />
+            </Container>
+          </LayoutWrapper>
+        </UserProvider>
       </body>
     </html>
   );

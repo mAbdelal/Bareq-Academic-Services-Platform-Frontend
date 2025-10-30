@@ -330,11 +330,18 @@ function Sidebar({ chatData, router, state, type, isAdmin, offerId }) {
                     <div key={user.id} className="flex items-center gap-3 p-4 bg-white rounded-xl shadow-md">
                         <Link href={`/academics/profile/${user.id}`} className="hover:opacity-80 transition">
                             <Avatar
-                                url={`${process.env.NEXT_PUBLIC_BASE_URL}/assets/${user?.avatar}`}
+                                url={
+                                    user?.avatar
+                                        ? user.avatar.startsWith("http")
+                                            ? user.avatar // Google or any external URL
+                                            : `${process.env.NEXT_PUBLIC_BASE_URL}/assets/${user.avatar}` // Local uploads
+                                        : null
+                                }
                                 fallbackLetter={user?.first_name_ar?.charAt(0)?.toUpperCase() || "U"}
                                 alt={user?.first_name_ar || "User Avatar"}
                                 size={48}
                             />
+
                         </Link>
                         <div className="flex flex-col">
                             <span className="font-semibold text-gray-800">
@@ -393,11 +400,18 @@ function Sidebar({ chatData, router, state, type, isAdmin, offerId }) {
                 <div className="flex flex-col items-center gap-5 mt-4">
                     <Link href={`/academics/profile/${otherUser.id}`} className="hover:opacity-80 transition">
                         <Avatar
-                            url={`${process.env.NEXT_PUBLIC_BASE_URL}/assets/${otherUser?.avatar}`}
+                            url={
+                                otherUser?.avatar
+                                    ? otherUser.avatar.startsWith("http")
+                                        ? otherUser.avatar // external URL (like Google)
+                                        : `${process.env.NEXT_PUBLIC_BASE_URL}/assets/${otherUser.avatar}` // local uploads
+                                    : null
+                            }
                             fallbackLetter={otherUser?.first_name_ar?.charAt(0)?.toUpperCase() || "U"}
-                            alt={otherUser?.first_name_ar || "otherUser Avatar"}
+                            alt={otherUser?.first_name_ar || "Other User Avatar"}
                             size={48}
                         />
+
                     </Link>
                     <div className="flex flex-col gap-3">
                         <span className="font-semibold text-gray-800">

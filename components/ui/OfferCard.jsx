@@ -16,10 +16,17 @@ export default function OfferCard({ offer }) {
             {/* Provider Info */}
             <div className="flex items-center gap-3 mb-3">
                 <Avatar
-                    url={provider?.avatar ? `${process.env.NEXT_PUBLIC_BASE_URL}/assets/${provider.avatar}` : undefined}
+                    url={
+                        provider?.avatar
+                            ? provider.avatar.startsWith("http") 
+                                ? provider.avatar 
+                                : `${process.env.NEXT_PUBLIC_BASE_URL}/assets/${provider.avatar}` 
+                            : undefined
+                    }
                     fallbackLetter={provider?.first_name_ar?.charAt(0) || "؟"}
-                    alt={provider?.full_name_en}
+                    alt={provider?.full_name_en || "Provider Avatar"}
                 />
+
                 <div>
                     <h4 className="font-semibold text-label">
                         {provider?.first_name_ar} {provider?.last_name_ar}

@@ -8,6 +8,10 @@ const nextConfig = {
                 port: "8080",
                 pathname: "/api/v1/assets/**",
             },
+            {
+                protocol: "https",
+                hostname: "lh3.googleusercontent.com",
+            },
         ],
     },
 };

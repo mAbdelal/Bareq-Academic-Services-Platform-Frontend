@@ -3,8 +3,11 @@ import Avatar from "@/components/ui/Avatar";
 
 export default function RatingCard({ rating }) {
     const avatarUrl = rating.user?.avatar
-        ? `${process.env.NEXT_PUBLIC_BASE_URL}/assets/${rating.user.avatar}`
+        ? rating.user.avatar.startsWith("http")
+            ? rating.user.avatar 
+            : `${process.env.NEXT_PUBLIC_BASE_URL}/assets/${rating.user.avatar}` 
         : undefined;
+
 
     const fallbackLetter = rating.user?.first_name_ar
         ? rating.user.first_name_ar.charAt(0)

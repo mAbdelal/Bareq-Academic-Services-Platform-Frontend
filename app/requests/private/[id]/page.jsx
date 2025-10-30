@@ -311,12 +311,19 @@ export default function MyRequestDetailsPage() {
                 {/* Sidebar */}
                 <aside className="w-full lg:w-1/4 flex flex-col items-center gap-4 bg-white shadow-lg rounded-2xl p-6 border border-gray-100 h-fit">
                     <Avatar
-                        url={requester.user?.avatar ? `${process.env.NEXT_PUBLIC_BASE_URL}/assets/${requester.user.avatar}` : undefined}
-                        fallbackLetter={requester.user?.first_name_ar?.charAt(0) || "؟"}
-                        alt={requester.user?.full_name_en}
+                        url={
+                            requester.user?.avatar
+                                ? requester.user.avatar.startsWith("http")
+                                    ? requester.user.avatar
+                                    : `${process.env.NEXT_PUBLIC_BASE_URL}/assets/${requester.user.avatar}`
+                                : undefined
+                        }
+                        fallbackLetter={requester.user?.first_name_ar?.charAt(0)?.toUpperCase() || "؟"}
+                        alt={requester.user?.full_name_en || "Requester Avatar"}
                         size={96}
                         className="shadow-md"
                     />
+
                     <h4 className="font-bold text-lg md:text-xl mt-2 text-center text-label">
                         {requester.user?.first_name_ar} {requester.user?.last_name_ar}
                     </h4>

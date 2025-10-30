@@ -69,12 +69,19 @@ export default function RequestDetailsPage() {
                 <aside className="w-full lg:w-1/4 flex flex-col items-center gap-4 bg-white shadow-lg rounded-2xl p-6 border border-gray-100 h-fit">
                     {/* Requester Info */}
                     <Avatar
-                        url={`${process.env.NEXT_PUBLIC_BASE_URL}/assets/${requester?.avatar}`}
-                        fallbackLetter={requester?.first_name_ar?.charAt(0) || "؟"}
-                        alt={requester?.full_name_en}
+                        url={
+                            requester?.avatar
+                                ? requester.avatar.startsWith("http")
+                                    ? requester.avatar
+                                    : `${process.env.NEXT_PUBLIC_BASE_URL}/assets/${requester.avatar}`
+                                : undefined
+                        }
+                        fallbackLetter={requester?.first_name_ar?.charAt(0)?.toUpperCase() || "؟"}
+                        alt={requester?.full_name_en || "Requester Avatar"}
                         size={96}
                         className="shadow-md"
                     />
+
                     <h4 className="font-bold text-lg md:text-xl mt-2 text-center text-gray-800">
                         {requester?.first_name_ar} {requester?.last_name_ar}
                     </h4>

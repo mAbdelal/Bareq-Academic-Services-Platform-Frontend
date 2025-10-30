@@ -114,12 +114,19 @@ export default function WorkDetailsPage() {
                 {/* Sidebar */}
                 <aside className="w-full lg:w-1/4 flex flex-col items-center gap-4 bg-white shadow-lg rounded-2xl p-6 border border-gray-100 h-fit">
                     <Avatar
-                        url={`${process.env.NEXT_PUBLIC_BASE_URL}/assets/${user.avatar}`}
+                        url={
+                            user?.avatar
+                                ? user.avatar.startsWith("http")
+                                    ? user.avatar 
+                                    : `${process.env.NEXT_PUBLIC_BASE_URL}/assets/${user.avatar}` 
+                                : undefined
+                        }
                         fallbackLetter={user?.first_name_ar?.charAt(0) || "؟"}
-                        alt={user?.full_name_en}
+                        alt={user?.full_name_en || "User Avatar"}
                         size={96}
                         className="shadow-md"
                     />
+
                     <h4 className="font-bold text-lg md:text-xl mt-2 text-center text-gray-800">
                         {user?.first_name_ar} {user?.last_name_ar}
                     </h4>

@@ -32,7 +32,16 @@ export default function MyDisputesPage() {
                 const academicJson = await academicRes.json();
                 setAcademic(academicJson.data);
 
-                if (academicJson.data.user?.avatar) setAvatarUrl(academicJson.data.user.avatar);
+                if (academicJson.data.user?.avatar) {
+                    const avatar = academicJson.data.user.avatar;
+
+                    const avatarUrl = avatar.startsWith("http")
+                        ? avatar 
+                        : `${process.env.NEXT_PUBLIC_BASE_URL}/assets/${avatar}`; 
+
+                    setAvatarUrl(avatarUrl);
+                }
+
                 if (academicJson.data.user?.first_name_ar)
                     setFallbackLetter(academicJson.data.user.first_name_ar[0]);
 
@@ -171,11 +180,18 @@ export default function MyDisputesPage() {
                                     {/* Other participant */}
                                     <div className="flex items-center gap-2 mb-2">
                                         <Avatar
-                                            url={`${process.env.NEXT_PUBLIC_BASE_URL}/assets/${dispute.otherParticipant?.avatar}`}
-                                            fallbackLetter={dispute.otherParticipant?.name?.[0] || "U"}
-                                            alt={dispute.otherParticipant?.name || "User"}
+                                            url={
+                                                dispute.otherParticipant?.avatar
+                                                    ? dispute.otherParticipant.avatar.startsWith("http")
+                                                        ? dispute.otherParticipant.avatar 
+                                                        : `${process.env.NEXT_PUBLIC_BASE_URL}/assets/${dispute.otherParticipant.avatar}` // local asset
+                                                    : undefined 
+                                            }
+                                            fallbackLetter={dispute.otherParticipant?.first_name_ar?.[0] || "U"}
+                                            alt={dispute.otherParticipant?.first_name_ar || "User"}
                                             size={40}
                                         />
+
                                         <span className="text-sm font-medium text-label">
                                             {dispute.otherParticipant?.first_name_ar + " " + dispute.otherParticipant?.last_name_ar}
                                         </span>

@@ -75,11 +75,18 @@ export default function ViewProfilePage() {
                 <div className="w-full md:w-1/4 flex flex-col gap-4">
                     <div className="bg-white rounded-2xl shadow-lg p-6 flex flex-col items-center gap-4">
                         <Avatar
-                            url={user.user.avatar ? `${process.env.NEXT_PUBLIC_BASE_URL}/assets/${user.user.avatar}` : null}
-                            fallbackLetter={user.user.first_name_ar?.charAt(0) || "U"}
+                            url={
+                                user?.user?.avatar
+                                    ? user.user.avatar.startsWith("http")
+                                        ? user.user.avatar
+                                        : `${process.env.NEXT_PUBLIC_BASE_URL}/assets/${user.user.avatar}`
+                                    : null
+                            }
+                            fallbackLetter={user?.user?.first_name_ar?.charAt(0) || "U"}
                             size={80}
                             className="border"
                         />
+
                         <h2 className="text-xl font-bold text-center">{user.user.first_name_ar} {user.user.last_name_ar}</h2>
                         <Link href="/academics/profile/edit" className="text-primary underline hover:text-primary/80">تعديل الملف الشخصي</Link>
                     </div>

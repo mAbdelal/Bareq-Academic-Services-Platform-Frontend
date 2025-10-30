@@ -19,13 +19,16 @@ export default function RequestCard({ request }) {
                         <Avatar
                             url={
                                 requester?.avatar
-                                    ? `${process.env.NEXT_PUBLIC_BASE_URL}/assets/${requester.avatar}`
+                                    ? requester.avatar.startsWith("http") 
+                                        ? requester.avatar
+                                        : `${process.env.NEXT_PUBLIC_BASE_URL}/assets/${requester.avatar}`
                                     : undefined
                             }
                             fallbackLetter={requester?.first_name_ar?.charAt(0) || "؟"}
                             alt={requester?.full_name_en}
                             size={40}
                         />
+
                         <div>
                             <h4 className="font-semibold text-gray-800 group-hover:text-primary transition-colors text-sm md:text-base">
                                 {requester?.first_name_ar} {requester?.last_name_ar}

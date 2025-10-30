@@ -301,11 +301,18 @@ function UserCard({ user, label }) {
     return (
         <div className="flex items-center gap-3 p-4 bg-white rounded-xl shadow-md">
             <Avatar
-                url={`${process.env.NEXT_PUBLIC_BASE_URL}/assets/${user.user?.avatar}`}
-                fallbackLetter={user.user?.first_name_ar?.charAt(0) || "U"}
+                url={
+                    user.user?.avatar
+                        ? user.user.avatar.startsWith("http")
+                            ? user.user.avatar // external (Google) avatar
+                            : `${process.env.NEXT_PUBLIC_BASE_URL}/assets/${user.user.avatar}` // local upload
+                        : null
+                }
+                fallbackLetter={user.user?.first_name_ar?.charAt(0)?.toUpperCase() || "U"}
                 alt={user.user?.first_name_ar || "User Avatar"}
                 size={48}
             />
+
             <div className="flex flex-col">
                 {label && <span className="text-xs text-gray-500">{label}</span>}
                 <span className="font-semibold text-gray-800">

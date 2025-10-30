@@ -214,9 +214,14 @@ export default function PrivateServicePage() {
             <div className="text-center py-20 text-gray-500">الخدمة غير موجودة</div>
         );
 
-    const avatarUrl = serviceData.provider.user.avatar
-        ? `${process.env.NEXT_PUBLIC_BASE_URL}/assets/${serviceData.provider.user.avatar}`
+    const avatar = serviceData?.provider?.user?.avatar;
+
+    const avatarUrl = avatar
+        ? avatar.startsWith("http")
+            ? avatar
+            : `${process.env.NEXT_PUBLIC_BASE_URL}/assets/${avatar}`
         : undefined;
+
     const fallbackLetter =
         serviceData.provider.user.first_name_ar?.charAt(0) || "؟";
 
@@ -573,12 +578,13 @@ function PurchasesList({ serviceData, setServiceData, isAdmin, router }) {
                 `${process.env.NEXT_PUBLIC_BASE_URL}/purchases/${purchaseId}/accept`,
                 { method: "PATCH" }
             );
+            const json = await res.json();
 
             if (res.ok) {
                 toast.success("تم قبول الشراء");
                 router.push(`/purchases/${purchaseId}`)
             } else {
-                toast.error("فشل في قبول الشراء");
+                toast.error(json.message);
             }
         } catch (err) {
             toast.error("حدث خطأ أثناء قبول الشراء");
@@ -615,9 +621,14 @@ function PurchasesList({ serviceData, setServiceData, isAdmin, router }) {
                     <p className="text-xl font-bold mb-4">المشتريات</p>
                     <div className="grid gap-4 md:grid-cols-2">
                         {serviceData.purchases.map((purchase) => {
-                            const buyerAvatarUrl = purchase.buyer?.user?.avatar
-                                ? `${process.env.NEXT_PUBLIC_BASE_URL}/assets/${purchase.buyer.user.avatar}`
+                            const buyerAvatar = purchase?.buyer?.user?.avatar;
+
+                            const buyerAvatarUrl = buyerAvatar
+                                ? buyerAvatar.startsWith("http")
+                                    ? buyerAvatar
+                                    : `${process.env.NEXT_PUBLIC_BASE_URL}/assets/${buyerAvatar}`
                                 : undefined;
+
                             const buyerFallback =
                                 purchase.buyer?.user?.first_name_ar?.charAt(0) || "؟";
 

@@ -244,12 +244,19 @@ export default function PurchaseDetailsPage() {
                 {/* Sidebar */}
                 <aside className="w-full lg:w-1/4 flex flex-col items-center gap-4 bg-white shadow-lg rounded-2xl p-6 border border-gray-100 h-fit">
                     <Avatar
-                        url={provider?.avatar ? `${process.env.NEXT_PUBLIC_BASE_URL}/assets/${provider.avatar}` : undefined}
-                        fallbackLetter={provider?.first_name_ar?.charAt(0) || "؟"}
-                        alt={provider?.full_name_en}
+                        url={
+                            provider?.avatar
+                                ? provider.avatar.startsWith("http")
+                                    ? provider.avatar
+                                    : `${process.env.NEXT_PUBLIC_BASE_URL}/assets/${provider.avatar}`
+                                : undefined
+                        }
+                        fallbackLetter={provider?.first_name_ar?.charAt(0)?.toUpperCase() || "؟"}
+                        alt={provider?.full_name_en || "Provider Avatar"}
                         size={96}
                         className="shadow-md"
                     />
+
                     <h4 className="font-bold text-lg md:text-xl mt-2 text-center text-label">
                         {provider?.first_name_ar} {provider?.last_name_ar}
                     </h4>
@@ -721,7 +728,7 @@ function PurchaseDisputeButton({ purchase, loggedInUserRole, onDisputeSuccess })
         }
     };
 
-    if (["disputed_by_provider", "disputed_by_owner"].includes(purchase.status)) return (
+    if (["disputed_by_provider", "disputed_by_buyer"].includes(purchase.status)) return (
         <Button variant="default" className="bg-red-600 text-white hover:bg-red-400">
             <Link href={`/disputes/${purchase.dispute.id}`}>فتح صفحة النزاع</Link>
         </Button>

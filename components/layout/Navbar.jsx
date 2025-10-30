@@ -173,11 +173,18 @@ export default function Navbar() {
                             <div className="relative block" ref={avatarRef}>
                                 <div className="flex items-center gap-2 cursor-pointer select-none" onClick={() => setAvatarOpen(!avatarOpen)}>
                                     <Avatar
-                                        url={user.avatar ? `${process.env.NEXT_PUBLIC_BASE_URL}/assets/${user.avatar}` : null}
+                                        url={
+                                            user.avatar
+                                                ? user.avatar.startsWith("http") 
+                                                    ? user.avatar
+                                                    : `${process.env.NEXT_PUBLIC_BASE_URL}/assets/${user.avatar}`
+                                                : null
+                                        }
                                         fallbackLetter={user.first_name_ar?.charAt(0) || "U"}
                                         size={35}
                                         className="border"
                                     />
+
                                     <span className="font-medium">{user.first_name_ar} {user.last_name_ar}</span>
                                 </div>
 

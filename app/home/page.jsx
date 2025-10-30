@@ -84,14 +84,17 @@ export default function DashboardPage() {
                     <div className="bg-white rounded-2xl shadow-lg p-6 flex flex-col items-center gap-4">
                         <Avatar
                             url={
-                                user.user.avatar
-                                    ? `${process.env.NEXT_PUBLIC_BASE_URL}/assets/${user.user.avatar}`
+                                user?.user?.avatar
+                                    ? user.user.avatar.startsWith("http")
+                                        ? user.user.avatar
+                                        : `${process.env.NEXT_PUBLIC_BASE_URL}/assets/${user.user.avatar}`
                                     : null
                             }
-                            fallbackLetter={user.user.first_name_ar?.charAt(0) || "U"}
+                            fallbackLetter={user?.user?.first_name_ar?.charAt(0) || "U"}
                             size={80}
                             className="border"
                         />
+
                         <h2 className="text-xl font-bold text-center">
                             {user.user.first_name_ar} {user.user.last_name_ar}
                         </h2>

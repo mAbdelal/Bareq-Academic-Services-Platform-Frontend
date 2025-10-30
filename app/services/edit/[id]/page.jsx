@@ -43,7 +43,7 @@ export default function EditServicePage() {
         const fetchService = async () => {
             try {
                 const res = await fetchWithAuth(
-                    `${process.env.NEXT_PUBLIC_BASE_URL}/services/my/${serviceId}`
+                    `${process.env.NEXT_PUBLIC_BASE_URL}/services/private/${serviceId}`
                 );
                 const json = await res.json();
                 if (!res.ok) throw new Error(json.message || "فشل تحميل الخدمة");

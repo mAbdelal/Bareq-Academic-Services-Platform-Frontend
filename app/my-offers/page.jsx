@@ -31,7 +31,16 @@ export default function MyOffersPage() {
                 const academicJson = await academicRes.json();
                 setAcademic(academicJson.data);
 
-                if (academicJson.data.user?.avatar) setAvatarUrl(academicJson.data.user.avatar);
+                if (academicJson.data.user?.avatar) {
+                    const avatar = academicJson.data.user.avatar;
+
+                    setAvatarUrl(
+                        avatar.startsWith("http")
+                            ? avatar // ✅ external avatar (Google, etc.)
+                            : `${process.env.NEXT_PUBLIC_BASE_URL}/assets/${avatar}` // ✅ local avatar
+                    );
+                }
+
                 if (academicJson.data.user?.first_name_ar)
                     setFallbackLetter(academicJson.data.user.first_name_ar[0]);
 

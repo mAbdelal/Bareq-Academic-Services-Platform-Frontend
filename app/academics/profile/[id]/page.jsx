@@ -114,9 +114,12 @@ export default function AcademicProfilePage() {
             <div className="text-center py-20 text-gray-500">المستخدم غير موجود</div>
         );
 
-    const avatarUrl = academic.user?.avatar
-        ? `${process.env.NEXT_PUBLIC_BASE_URL}/assets/${academic.user.avatar}`
+    const avatarUrl = academic?.user?.avatar
+        ? academic.user.avatar.startsWith("http")
+            ? academic.user.avatar
+            : `${process.env.NEXT_PUBLIC_BASE_URL}/assets/${academic.user.avatar}`
         : undefined;
+
 
     const fallbackLetter = academic.user?.first_name_ar
         ? academic.user.first_name_ar.charAt(0)

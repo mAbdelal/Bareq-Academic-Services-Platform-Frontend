@@ -101,8 +101,11 @@ export default function ServiceDetailsPage() {
         );
 
     const avatarUrl = service.provider?.user?.avatar
-        ? `${process.env.NEXT_PUBLIC_BASE_URL}/assets/${service.provider.user.avatar}`
+        ? service.provider.user.avatar.startsWith("http")
+            ? service.provider.user.avatar
+            : `${process.env.NEXT_PUBLIC_BASE_URL}/assets/${service.provider.user.avatar}`
         : undefined;
+
 
     const fallbackLetter = service.provider?.user?.first_name_ar
         ? service.provider.user.first_name_ar.charAt(0)
@@ -261,12 +264,15 @@ export default function ServiceDetailsPage() {
                                             <Avatar
                                                 url={
                                                     r.rater.user.avatar
-                                                        ? `${process.env.NEXT_PUBLIC_BASE_URL}/assets/${r.rater.user.avatar}`
+                                                        ? r.rater.user.avatar.startsWith("http")
+                                                            ? r.rater.user.avatar
+                                                            : `${process.env.NEXT_PUBLIC_BASE_URL}/assets/${r.rater.user.avatar}`
                                                         : undefined
                                                 }
-                                                fallbackLetter={r.rater.user.first_name_ar?.charAt(0) || "؟"}
-                                                alt={r.rater.user.full_name_en}
+                                                fallbackLetter={r.rater.user.first_name_ar?.charAt(0)?.toUpperCase() || "؟"}
+                                                alt={r.rater.user.full_name_en || "Rater Avatar"}
                                             />
+
                                             <div>
                                                 <h4 className="font-semibold text-label">
                                                     {r.rater.user.first_name_ar} {r.rater.user.last_name_ar}

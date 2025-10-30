@@ -6,8 +6,11 @@ import {translateAcademicStatus} from "@/lib/translations";
 export default function AcademicCard({ acad }) {
     // Prepare avatar URL and fallback letter
     const avatarUrl = acad.user?.avatar
-        ? `${process.env.NEXT_PUBLIC_BASE_URL}/assets/${acad.user.avatar}`
+        ? acad.user.avatar.startsWith("http")
+            ? acad.user.avatar 
+            : `${process.env.NEXT_PUBLIC_BASE_URL}/assets/${acad.user.avatar}` 
         : undefined;
+
 
     const fallbackLetter = acad.user?.first_name_ar
         ? acad.user.first_name_ar.charAt(0)

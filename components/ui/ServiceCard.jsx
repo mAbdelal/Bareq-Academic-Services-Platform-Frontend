@@ -5,8 +5,11 @@ import Avatar from "@/components/ui/Avatar";
 
 export default function ServiceCard({ service }) {
     const avatarUrl = service.provider?.user?.avatar
-        ? `${process.env.NEXT_PUBLIC_BASE_URL}/assets/${service.provider.user.avatar}`
+        ? service.provider.user.avatar.startsWith("http") 
+            ? service.provider.user.avatar
+            : `${process.env.NEXT_PUBLIC_BASE_URL}/assets/${service.provider.user.avatar}`
         : undefined;
+
 
     const fallbackLetter = service.provider?.user?.first_name_ar
         ? service.provider.user.first_name_ar.charAt(0)

@@ -79,7 +79,7 @@ export default function SignUpPage() {
     };
 
     return (
-        <div className="min-h-screen flex items-center justify-center mt-10 p-4 bg-gray-50">
+        <div className="min-h-screen flex items-center justify-center mt-10 p-4">
             <div className="w-full max-w-xl bg-white p-10 rounded-3xl shadow-xl border border-gray-200">
                 <h2 className="text-3xl font-bold mb-6 text-center text-gray-800">تسجيل أكاديمي جديد</h2>
 

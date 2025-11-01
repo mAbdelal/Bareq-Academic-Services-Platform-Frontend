@@ -176,7 +176,7 @@ export default function LoginPage() {
 
                 <p className="mt-6 text-center text-gray-600 text-sm">
                     ليس لديك حساب؟{" "}
-                    <Link href="/register" className="text-primary font-medium hover:underline">تسجيل حساب جديد</Link>
+                    <Link href="/register/academic" className="text-primary font-medium hover:underline">تسجيل حساب جديد</Link>
                 </p>
             </div>
         </div>

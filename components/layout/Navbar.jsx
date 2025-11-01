@@ -191,7 +191,7 @@ export default function Navbar() {
                                 {avatarOpen && (
                                     <div className="absolute right-0 mt-2 w-56 bg-white shadow-lg rounded-lg z-50 text-right">
                                         <Link href="/home" className="flex items-center gap-2 px-4 py-3 hover:bg-gray-100"><Home className="w-5 h-5" /> الصفحة الرئيسية</Link>
-                                        <Link href="/profile/change-password" className="flex items-center gap-2 px-4 py-3 hover:bg-gray-100"><Key className="w-5 h-5" /> تغيير كلمة المرور</Link>
+                                        <Link href="/change-password" className="flex items-center gap-2 px-4 py-3 hover:bg-gray-100"><Key className="w-5 h-5" /> تغيير كلمة المرور</Link>
                                         <div onClick={handleLogout} className="flex items-center gap-2 px-4 py-3 hover:bg-gray-100 cursor-pointer"><LogOut className="w-5 h-5" /> تسجيل الخروج</div>
                                     </div>
                                 )}

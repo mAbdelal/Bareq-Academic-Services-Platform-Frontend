@@ -40,7 +40,6 @@ export default function ChangePasswordPage() {
     const onSubmit = async (data) => {
         if (!isStrongPassword(data.new)) {
             toast.error("كلمة المرور ضعيفة: يجب أن تكون مكونة من 8 أحرف على الأقل وتحتوي على أحرف وأرقام");
-
             return;
         }
 
@@ -59,18 +58,18 @@ export default function ChangePasswordPage() {
         } catch (e) {
             toast.error(e.message || "حدث خطأ غير متوقع");
         }
-
     };
 
     if (state.user === undefined) return null;
     if (!state.user || state.user?.role) return null;
 
     return (
-        <div className="space-y-6 mt-7">
-            <PageTitle title="تغيير كلمة المرور" paragraph="قم بتحديث كلمة المرور الخاصة بك" />
+        <div className="min-h-screen flex items-center justify-center px-4">
+            <div className="w-full max-w-lg bg-white rounded-xl shadow p-6 space-y-6 text-right" dir="rtl">
+                <PageTitle title="تغيير كلمة المرور" paragraph="قم بتحديث كلمة المرور الخاصة بك" />
 
-            <div className="bg-white rounded-xl shadow p-6 w-full">
                 <form className="space-y-4" onSubmit={handleSubmit(onSubmit)}>
+                    {/* Current Password */}
                     <div className="space-y-2">
                         <Label htmlFor="current">كلمة المرور الحالية</Label>
                         <Input
@@ -79,7 +78,9 @@ export default function ChangePasswordPage() {
                             aria-invalid={errors.current ? true : undefined}
                             {...register("current", { required: "مطلوب" })}
                         />
-                        {errors.current && <span className="text-red-500 text-sm">{errors.current.message}</span>}
+                        {errors.current && (
+                            <span className="text-red-500 text-sm">{errors.current.message}</span>
+                        )}
 
                         <div className="flex items-center space-x-2 rtl:space-x-reverse gap-2 mt-1">
                             <input
@@ -95,6 +96,7 @@ export default function ChangePasswordPage() {
                         </div>
                     </div>
 
+                    {/* New Password */}
                     <div className="space-y-2 mt-7">
                         <Label htmlFor="new">كلمة المرور الجديدة</Label>
                         <Input
@@ -103,10 +105,12 @@ export default function ChangePasswordPage() {
                             aria-invalid={errors.new ? true : undefined}
                             {...register("new", { required: "مطلوب" })}
                         />
-                        {errors.new && <span className="text-red-500 text-sm">{errors.new.message}</span>}
+                        {errors.new && (
+                            <span className="text-red-500 text-sm">{errors.new.message}</span>
+                        )}
                     </div>
 
-                    <Button className="bg-primary" disabled={isSubmitting}>
+                    <Button className="w-full bg-primary" disabled={isSubmitting}>
                         {isSubmitting ? "جاري الحفظ..." : "حفظ"}
                     </Button>
                 </form>
